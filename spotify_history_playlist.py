@@ -100,17 +100,17 @@ def main():
         return
 
     # search for the tracks at spotify
-    songs_readable = [["Hello", "Adele"], ["Thing of Beauty", "Danger Twins"], ["lakdsjfklasjdfkljoqwjfasdf", ""], ["Mein kleines Herz", ""]]
-    songs_uri = []
-    for title, artist in songs_readable:
-        track_uri = search_track(spotify_object, title, artist)
-        if track_uri is not None:
-            songs_uri.append(track_uri)
-    print(songs_uri)
+    track_list = []
+    for track in streaming_history:
+        if startdatetime_obj <= track["datetime"] <= enddatetime_obj:
+            track_uri = search_track(spotify_object, track["trackName"], track["artistName"])
+            if track_uri is not None:
+                track_list.append(track_uri)
+    print(track_list)
 
     # add tracks to the spotify playlist / fill playlist
-    if songs_uri:
-        spotify_object.playlist_add_items(playlist_id=playlist_id, items=songs_uri, position=None)
+    if track_list:
+        spotify_object.playlist_add_items(playlist_id=playlist_id, items=track_list, position=None)
 
     # confirm process
     print("DONE")
