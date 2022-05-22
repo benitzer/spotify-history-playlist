@@ -1,0 +1,5 @@
+https://github.com/vlad-ds/spoty-records
+
+https://www.youtube.com/watch?v=jSOrEmKUd_c
+
+https://developer.spotify.com/documentation/web-api/reference/#/operations/create-playlist
