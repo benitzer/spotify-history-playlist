@@ -110,7 +110,9 @@ def main():
 
     # add tracks to the spotify playlist / fill playlist
     if track_list:
-        spotify_object.playlist_add_items(playlist_id=playlist_id, items=track_list, position=None)
+        n = 100  # max addable tracks per request
+        for track_list_chunk in [track_list[i:i + n] for i in range(0, len(track_list), n)]:
+            spotify_object.playlist_add_items(playlist_id=playlist_id, items=track_list_chunk, position=None)
 
     # confirm process
     print("DONE")
