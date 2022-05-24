@@ -53,16 +53,19 @@ def create_playlist(spotify_object):
     creates a spotify playlist
     :return:
     """
-    playlist_name = input("Enter the playlist name: ")  # TODO script could name the playlist based on the wished time period
+    playlist_name = input("Enter the playlist name: ")
     playlist_description = input("Enter the playlist description: ")
 
-    playlist = spotify_object.user_playlist_create(user=config.USERNAME, name=playlist_name, public=True, description=playlist_description)  # change config.SCOPE to "playlist-modify-private" for being able to create a private playlist
+    playlist = spotify_object.user_playlist_create(user=config.USERNAME, name=playlist_name,
+                                                   public=True, description=playlist_description)
+    # change config.SCOPE to "playlist-modify-private" for being able to create a private playlist
+
     try:
         playlist_id = playlist["id"]
         return playlist_id
     except:
         print("could not get the URI of the playlist apparently")
-        return
+        return None
 
 
 def search_track(spotify_object, title, artist):
@@ -73,7 +76,7 @@ def search_track(spotify_object, title, artist):
         return track_uri
     except:
         print("apparently could not access the search result for the song \"" + title + "\" by \"" + artist + "\"")
-        return
+        return None
 
 
 
@@ -95,29 +98,31 @@ def main():
     spotify_object = spotipy.Spotify(auth_manager=token)
 
     # create playlist
-    # TODO ask user "playlist already existing?" -> if yes: ask for playlist_id (or name and script has to search) and don't create new one
     playlist_id = create_playlist(spotify_object)
     if playlist_id is None:
         print("playlist_id is None")
         return
 
-    # search for the tracks at spotify
+    # search for the tracks on spotify
     track_list = []
+    if track_list:
+        print("Search for the tracks on Spotify:")
     for track in streaming_history:
         if start_datetime <= track["datetime"] <= end_datetime:
             track_uri = search_track(spotify_object, track["trackName"], track["artistName"])
             if track_uri is not None:
                 track_list.append(track_uri)
-    print(track_list)
+                print(str(track["datetime"]) + ": " + track_uri + " - found \"" + track["trackName"] + "\" by \"" + track["artistName"] + "\" on Spotify")
 
     # add tracks to the spotify playlist / fill playlist
+    print("Add tracks to the Spotify playlist")
     if track_list:
         n = 100  # max addable tracks per request
         for track_list_chunk in [track_list[i:i + n] for i in range(0, len(track_list), n)]:
             spotify_object.playlist_add_items(playlist_id=playlist_id, items=track_list_chunk, position=None)
 
     # confirm process
-    print("DONE")
+    print("\nDONE")
 
 if __name__ == '__main__':
     main()
