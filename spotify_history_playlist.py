@@ -1,14 +1,12 @@
-import ast
+from datetime import datetime
 import json
+from os import listdir
+from typing import List
 
 import spotipy
-from typing import List
-from os import listdir
-from datetime import datetime
 from spotipy.oauth2 import SpotifyOAuth
 
 import config
-from config import *
 
 
 def get_datetime_from_user(kind_of_datetime: str) -> datetime:
@@ -28,26 +26,26 @@ def get_datetime_from_user(kind_of_datetime: str) -> datetime:
     return datetime_obj
 
 
-def get_streaming_history(path: str = 'MyData',
-                          ) -> List[dict]:
-    '''Returns a list of streamings form spotify MyData dump.
-    Will not acquire track features.'''
-    # method from vlad-ds/spoty-records history.py
+def get_streaming_history() -> List[dict]:
+    """
+    reads streaming history data from json-file in MyData dump
+    :return: list of streamings (dicts)
+    """
+    # parts of function from vlad-ds/spoty-records/history.py, but here enhanced
 
-    files = ['MyData/' + x for x in listdir(path)
-             if x.split('.')[0][:-1] == 'StreamingHistory']
+    files = ["MyData/" + filename for filename in listdir("MyData")
+             if filename[:16] == "StreamingHistory"]
 
-    all_streamings = []
+    streaming_history = []
 
-    for file in files:
-        with open(file, 'r', encoding='UTF-8') as f:
-            new_streamings = ast.literal_eval(f.read())
-            all_streamings += [streaming for streaming in new_streamings]
+    for filename in files:
+        with open(filename, 'r', encoding='UTF-8') as file:
+            streaming_history += json.load(file)
 
     # adding datetime field
-    for streaming in all_streamings:
+    for streaming in streaming_history:
         streaming['datetime'] = datetime.strptime(streaming['endTime'], '%Y-%m-%d %H:%M')
-    return all_streamings
+    return streaming_history
 
 
 def create_playlist(spotify_object):
@@ -89,7 +87,7 @@ def main():
     start_datetime = get_datetime_from_user("start")
     end_datetime = get_datetime_from_user("end")
 
-    # read data from JSON-files ("Request my data")
+    # read data from JSON-files (data from "Download your data")
     streaming_history = get_streaming_history()
 
     # connect with spotify
