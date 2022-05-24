@@ -1,3 +1,10 @@
+"""
+script for creating a spotify playlist
+based on streaming history
+for a specific time period
+(data from "Download your data")
+"""
+
 from datetime import datetime
 import json
 from os import listdir
@@ -12,7 +19,7 @@ import config
 def get_datetime_from_user(kind_of_datetime: str) -> datetime:
     """
     asks user for date and time and creates datetime-object
-    :return: datetime-object
+    returns datetime-object
     """
     datetime_obj_set = False
     while not datetime_obj_set:
@@ -29,7 +36,7 @@ def get_datetime_from_user(kind_of_datetime: str) -> datetime:
 def get_streaming_history() -> List[dict]:
     """
     reads streaming history data from json-file in MyData dump
-    :return: list of streamings (dicts)
+    returns list of streamings (dicts)
     """
     # parts of function from vlad-ds/spoty-records/history.py, but here enhanced
 
@@ -51,7 +58,7 @@ def get_streaming_history() -> List[dict]:
 def create_playlist(spotify_object):
     """
     creates a spotify playlist
-    :return:
+    returns playlist ID
     """
     playlist_name = input("Enter the playlist name: ")
     playlist_description = input("Enter the playlist description: ")
@@ -69,6 +76,10 @@ def create_playlist(spotify_object):
 
 
 def search_track(spotify_object, title, artist):
+    """
+    searches for a specific track named "title" by "artist" on spotify
+    returns track URI if found
+    """
     result = spotify_object.search(q=title+" "+artist)
     # print(json.dumps(result, indent=4))
     try:
@@ -84,7 +95,6 @@ def main():
     """
     - starting point for script
     - realizes ablauf.txt
-    :return:
     """
     # ask for wished time period
     start_datetime = get_datetime_from_user("start")

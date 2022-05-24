@@ -6,5 +6,5 @@
 
 interessante Bibliotheken:
 - Arbeit mit JSON
-- API-Kommunikation: requests?
+- API-Kommunikation: requests? -> spotipy uebernimmt diese Aufgaben
 - spotipy
