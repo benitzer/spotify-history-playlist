@@ -11,18 +11,21 @@ import config
 from config import *
 
 
-def get_wished_time_period():
+def get_datetime_from_user(kind_of_datetime: str) -> datetime:
     """
-    asks user for the wished time period (in history)
-    :return:
+    asks user for date and time and creates datetime-object
+    :return: datetime-object
     """
-    # startdatetime_str = input("Enter start date and time (in UTC, 24h per day) in format \"YYYY-MM-DD HH:MM\": ")
-    startdatetime_str = "2022-05-14 17:00"
-    startdatetime_obj = datetime.strptime(startdatetime_str, '%Y-%m-%d %H:%M')
-    # enddatetime_str = input("Enter end date and time (in UTC, 24h per day) in format \"YYYY-MM-DD HH:MM\": ")
-    enddatetime_str = "2022-05-15 01:00"
-    enddatetime_obj = datetime.strptime(enddatetime_str, '%Y-%m-%d %H:%M')
-    return startdatetime_obj, enddatetime_obj
+    datetime_obj_set = False
+    while not datetime_obj_set:
+        try:
+            datetime_str = input("Enter " + kind_of_datetime +" date and time (in UTC, 24h per day) in format \"YYYY-MM-DD HH:MM\": ")
+            datetime_obj = datetime.strptime(datetime_str, '%Y-%m-%d %H:%M')
+            datetime_obj_set = True
+        except ValueError as exception:
+            print(exception)
+            print("Try again!")
+    return datetime_obj
 
 
 def get_streaming_history(path: str = 'MyData',
@@ -83,7 +86,8 @@ def main():
     :return:
     """
     # ask for wished time period
-    startdatetime_obj, enddatetime_obj = get_wished_time_period()
+    start_datetime = get_datetime_from_user("start")
+    end_datetime = get_datetime_from_user("end")
 
     # read data from JSON-files ("Request my data")
     streaming_history = get_streaming_history()
@@ -102,7 +106,7 @@ def main():
     # search for the tracks at spotify
     track_list = []
     for track in streaming_history:
-        if startdatetime_obj <= track["datetime"] <= enddatetime_obj:
+        if start_datetime <= track["datetime"] <= end_datetime:
             track_uri = search_track(spotify_object, track["trackName"], track["artistName"])
             if track_uri is not None:
                 track_list.append(track_uri)
