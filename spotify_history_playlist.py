@@ -92,10 +92,6 @@ def search_track(spotify_object, title, artist):
 
 
 def main():
-    """
-    - starting point for script
-    - realizes ablauf.txt
-    """
     # ask for wished time period
     start_datetime = get_datetime_from_user("start")
     end_datetime = get_datetime_from_user("end")
