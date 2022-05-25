@@ -24,7 +24,8 @@ def get_datetime_from_user(kind_of_datetime: str) -> datetime:
     datetime_obj_set = False
     while not datetime_obj_set:
         try:
-            datetime_str = input("Enter " + kind_of_datetime +" date and time (in UTC, 24h per day) in format \"YYYY-MM-DD HH:MM\": ")
+            datetime_str = input("Enter " + kind_of_datetime +
+                                 " date and time (in UTC, 24h per day) in format \"YYYY-MM-DD HH:MM\": ")
             datetime_obj = datetime.strptime(datetime_str, '%Y-%m-%d %H:%M')
             datetime_obj_set = True
         except ValueError as exception:
@@ -101,7 +102,8 @@ def main():
     streaming_history = get_streaming_history()
 
     # connect with spotify
-    token = SpotifyOAuth(scope=config.SCOPE, username=config.USERNAME, client_id=config.CLIENT_ID, client_secret=config.CLIENT_SECRET, redirect_uri=config.REDIRECT_URI)
+    token = SpotifyOAuth(scope=config.SCOPE, username=config.USERNAME, client_id=config.CLIENT_ID,
+                         client_secret=config.CLIENT_SECRET, redirect_uri=config.REDIRECT_URI)
     spotify_object = spotipy.Spotify(auth_manager=token)
 
     # create playlist
@@ -118,7 +120,8 @@ def main():
             track_uri = search_track(spotify_object, track["trackName"], track["artistName"])
             if track_uri is not None:
                 track_list.append(track_uri)
-                print(str(track["datetime"]) + ": " + track_uri + " - found \"" + track["trackName"] + "\" by \"" + track["artistName"] + "\" on Spotify")
+                print(str(track["datetime"]) + ": " + track_uri + " - found \"" + track["trackName"] + "\" by \""
+                      + track["artistName"] + "\" on Spotify")
 
     # add tracks to the spotify playlist / fill playlist
     print("Adding tracks to the Spotify playlist")
