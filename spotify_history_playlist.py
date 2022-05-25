@@ -66,6 +66,7 @@ def create_playlist(spotify_object):
     playlist = spotify_object.user_playlist_create(user=config.USERNAME, name=playlist_name,
                                                    public=True, description=playlist_description)
     # change config.SCOPE to "playlist-modify-private" for being able to create a private playlist
+    # creation of private playlists does not work at the moment (reason unknown)
 
     try:
         playlist_id = playlist["id"]
@@ -111,8 +112,7 @@ def main():
 
     # search for the tracks on spotify
     track_list = []
-    if track_list:
-        print("Search for the tracks on Spotify:")
+    print("Searching for the tracks on Spotify:")
     for track in streaming_history:
         if start_datetime <= track["datetime"] <= end_datetime:
             track_uri = search_track(spotify_object, track["trackName"], track["artistName"])
@@ -121,7 +121,7 @@ def main():
                 print(str(track["datetime"]) + ": " + track_uri + " - found \"" + track["trackName"] + "\" by \"" + track["artistName"] + "\" on Spotify")
 
     # add tracks to the spotify playlist / fill playlist
-    print("Add tracks to the Spotify playlist")
+    print("Adding tracks to the Spotify playlist")
     if track_list:
         n = 100  # max addable tracks per request
         for track_list_chunk in [track_list[i:i + n] for i in range(0, len(track_list), n)]:
